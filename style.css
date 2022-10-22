@@ -1,0 +1,55 @@
+  
+  body {
+    font-family: 'Montserrat', sans-serif;
+  }
+
+  h1, h2, #board-container{
+    display: flex;
+    justify-content: center;    
+  }
+
+  .top-row-item {        
+    width:50px; 
+    height:50px;       
+  }
+
+  .top-row-item:hover {
+    background: gold;
+  }
+
+  table {
+    background:rgb(12, 31, 61);
+    margin: 50px;
+    padding: 10px;
+  }
+
+  .row-item {         
+    width:50px; 
+    height:50px;  
+    background: rgb(12, 31, 61);
+    align-content: center;
+  }
+
+  .win-slot{
+    background: gold;
+  }
+
+  .player1-color {
+    background:crimson 
+  }
+
+  .player2-color {
+    background:darkslateblue
+  }
+  .empty-color {
+    background: white;
+  }
+  .round{    
+    padding: 15px;
+    width:20px; 
+    height:20px; 
+    border-radius: 50%;
+    color: white;
+    text-align: center;    
+    font-size:large;
+  }
