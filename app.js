@@ -124,7 +124,7 @@ function get_first_empty_row(col_id){
 }
 
 function check_game_over(row, col){
-    let slots = check_for_win(row,col)
+    let slots = check_for_win_all_four(row,col)
     if (slots.length >= 4){
         display_win(slots)
         game_over = true
@@ -157,133 +157,37 @@ function display_win(slots){
     document.getElementById('game-status-board').innerText = players[current_player].name + " wins!"
 }
 
-function check_for_win(row, col){
-    let slots = check_for_win_horizontal(row, col)
-    console.log(slots)
-    if (slots.length >= 4) return slots
+function check_for_win_all_four(row, col){  
 
-    slots = check_for_win_vertical(row, col)
-    if (slots.length >= 4) return slots
+    const NorthSouth = [[-1, 0], [1, 0]]
+    const EastWest = [[0, -1], [0, 1]]
+    const NE_SW = [[-1, -1], [1, 1]]
+    const NW_SE = [[-1, 1], [1, -1]]
+    const directions = [NorthSouth, EastWest, NE_SW, NW_SE]
 
-    slots = check_for_win_diagonal_1(row, col)
-    if (slots.length >= 4) return slots
-
-    slots = check_for_win_diagonal_2(row, col)
-    if (slots.length >= 4) return slots
-
-    return slots
-}
-
-function check_for_win_horizontal(row, col){
-    const slots = [[row, col]]
-    
-    let h = col
-    while (true) {
-        h ++
-        if (h >= WIDTH) break
-        if (board[row][h] === current_player) {
-            slots.push([row, h])
-        } else {
-            break
-        }
+    for (let dirs of directions){
+        let slots = [[row, col]]
+        for (let dir of dirs){
+            let i = row
+            let j = col
+            let prior = true
+            while (true){
+                i += dir[0]
+                j += dir[1]
+                if (i < 0 || j >= WIDTH || i >= HEIGHT || j < 0)  break
+                if (board[i][j] === current_player) {
+                    if (prior)
+                        slots.push([i, j])
+                    else
+                        slots.shift([i, j])
+                } else {
+                    break
+                }
+            }
+        }  
+        if (slots.length >= 4) return slots
     }
-    h = col
-    while (true) {
-        h --
-        if (h < 0) break
-        if (board[row][h] === current_player) {
-            slots.unshift([row, h])
-        } else {
-            break
-        }
-    }
-    return slots
-}
-
-function check_for_win_vertical(row, col){
-    const slots = [[row, col]]
-    
-    let v = row
-    while (true) {
-        v ++
-        if (v >= HEIGHT) break
-        if (board[v][col] === current_player) {
-            slots.push([v, col])
-        } else {
-            break
-        }
-    }
-    v = row
-    while (true) {
-        v --
-        if (v < 0) break
-        if (board[v][col] === current_player) {
-            slots.unshift([v,col])
-        } else {
-            break
-        }
-    }
-    return slots
-}
-
-function check_for_win_diagonal_1(row, col){
-    const slots = [[row, col]]
-    
-    let i = row
-    let j = col
-    while (true) {
-        i ++
-        j ++
-        if (i >= HEIGHT || j >= WIDTH) break
-        if (board[i][j] === current_player) {
-            slots.push([i, j])
-        } else {
-            break
-        }
-    }
-    i = row
-    j = col
-    while (true) {
-        i --
-        j --
-        if (i < 0 || j < 0) break
-        if (board[i][j] === current_player) {
-            slots.unshift([i, j])
-        } else {
-            break
-        }
-    }
-    return slots
-}
-
-function check_for_win_diagonal_2(row, col){
-    const slots = [[row, col]]
-    
-    let i = row
-    let j = col
-    while (true) {
-        i ++
-        j --
-        if (i >= HEIGHT || j < 0) break
-        if (board[i][j] === current_player) {
-            slots.push([i, j])
-        } else {
-            break
-        }
-    }
-    i = row
-    j = col
-    while (true) {
-        i --
-        j ++
-        if (i < 0 || j >= WIDTH) break
-        if (board[i][j] === current_player) {
-            slots.unshift([i, j])
-        } else {
-            break
-        }
-    }
-    return slots
+    return []
 }
 
 function check_board_full(){
