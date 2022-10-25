@@ -9,6 +9,8 @@ let players = [{name: "Player One"}, {name: "Player Two"}]
 
 let game_over = false
 
+let is_animating = false
+
 
 function layout_board(board_width, board_height){
     document.getElementById('game-status-board').innerText = players[current_player].name
@@ -57,6 +59,8 @@ function init_board(){
 }
 
 function board_clicked(e){
+    if (is_animating) return
+
     if (game_over) return
 
     const clicked_id = e.target.id
@@ -67,7 +71,7 @@ function board_clicked(e){
     const drop_row = get_first_empty_row(col)
 
     if (drop_row === -1) return
-
+    
     show_drop_animation(drop_row, col)    
 }
 
@@ -86,6 +90,7 @@ function drop_round_original(row, col, clicked_id){
 }
 
 function show_drop_animation(row, col){    
+    is_animating = true
     let animated_row = 0
     let round_color 
     if (!current_player)
@@ -105,8 +110,10 @@ function show_drop_animation(row, col){
         }        
         animated_row ++
         if (animated_row > row){
+            is_animating = false
             clearInterval(id)
-            board[row][col] = current_player    
+            board[row][col] = current_player   
+
             if (!check_game_over(row, col)) toggle_current_player()
         } 
     }, 200)    
